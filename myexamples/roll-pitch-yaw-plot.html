@@ -1,0 +1,106 @@
+<html>
+  <head>
+    <title>RPY Plot - Leap</title>
+  </head>
+  <body>
+    <div id="pause"></div>
+    <div id="out" style="position:absolute;color:yellow"></div>
+    <script src="../leap-0.6.4.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/three.js/104/three.min.js"></script>
+
+    <script>
+
+	var controller = new Leap.Controller();
+	controller.connect();
+	
+	controller.on ('frame', function(frame) {
+	   var str = '';
+	   var _roll, _pitch, _yaw;
+	   _roll = _pitch = _yaw = 0;
+	      
+	   for (let i = 0; i < frame.hands.length; i++) {
+	   	 let hand = frame.hands[i];
+	   	 _roll = hand.roll();
+	   	 _pitch = hand.pitch();
+	   	 _yaw = hand.yaw();
+	   	 str += "<p>" + "Roll: " + _roll + "<br>Pitch: " + _pitch + "<br>Yaw: " + _yaw + "</p>"
+	   }
+	   document.getElementById('out').innerHTML = str;
+
+
+  	   xx += 0.1;
+       pt = new THREE.Vector3(xx, _roll+5, 0);  
+       addPoint(plot0, pt);
+       pt = new THREE.Vector3(xx, _pitch, 0);  
+       addPoint(plot1, pt);
+       pt = new THREE.Vector3(xx, _yaw-5, 0);  
+       addPoint(plot2, pt);
+
+       if (xx - camera.position.x > 5) {
+          camera.position.x += 5
+       }
+
+       renderer.render(scene, camera);
+	
+	});
+	
+//////////////////////////////////////////////
+var camera, scene, renderer;
+var plot0, plot1, plot2;
+const MAX_LINE_POINTS = 300;
+var xx = 0;
+
+init();
+
+function init() {
+
+  renderer = new THREE.WebGLRenderer({
+    antialias: true
+  });
+
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0x333333);
+  document.body.appendChild(renderer.domElement);
+
+  scene = new THREE.Scene();
+  camera = new THREE.OrthographicCamera(-50, 50, 10, -10, -10, 100);
+  camera.position.z = 10;
+
+  grid = new THREE.GridHelper(100, 10, 'red', 'white');
+  grid.rotation.x = Math.PI / 2
+  //scene.add(grid)
+  /////////////////////////////////////////////////////////
+  plot0 = createNewLine(new THREE.Vector3(0,5,0), 'red');
+  plot0.frustumCulled = false;
+  scene.add(plot0);
+  plot1 = createNewLine(new THREE.Vector3(0,0,0),'yellow');
+  plot1.frustumCulled = false;
+  scene.add(plot1);
+  plot2 = createNewLine(new THREE.Vector3(0,-5,0),'cyan');
+  plot2.frustumCulled = false;
+  scene.add(plot2);
+}
+
+function createNewLine(startingPoint, mycolor) {
+  var geometry = new THREE.Geometry();
+
+  for (let i = 0; i < MAX_LINE_POINTS; i++) {
+    geometry.vertices.push(startingPoint.clone());
+  }
+
+  myLine = new THREE.Line(geometry, new THREE.LineBasicMaterial({
+    color: mycolor
+  }));
+
+  return myLine;
+}
+
+function addPoint(plot, myPoint) {
+  plot.geometry.vertices.shift();
+  plot.geometry.vertices.push(myPoint);
+  plot.geometry.verticesNeedUpdate = true;
+}
+
+</script>
+</body>
+</html>

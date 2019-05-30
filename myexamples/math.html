@@ -1,0 +1,60 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Math - Leap</title>
+
+    <style>
+      body {
+        line-height: 2em;
+        font-family: Helvetica;
+      }
+      #out{
+        font-weight: bold;
+      }
+    </style>
+
+  </head>
+
+  <body>
+
+  <p>
+    <img src="images/dot-product.png"/>
+  </p>
+
+  <br>
+  <p> hand.direction: <span id='handDir'></span></p>
+  <p> indexFinger.direction: <span id='indexFDir'></span></p>
+  <p> dot = <span id="out"></span> </p>
+  
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="../leap-0.6.4.js"></script>
+
+<script>
+
+      Leap.loop({
+
+        frame: function(frame){
+          var hand = frame.hands[0];
+          if (hand){
+			$('#handDir').text (hand.direction[0].toFixed(2) + ', ' + 
+			       hand.direction[1].toFixed(2) + ', ' + hand.direction[2].toFixed(2));
+			$('#indexFDir').text (hand.indexFinger.direction[0].toFixed(2) + ', ' + 
+			       hand.indexFinger.direction[1].toFixed(2) 
+			       + ', ' + hand.indexFinger.direction[2].toFixed(2));
+			
+            var dot = Leap.vec3.dot(hand.direction, hand.indexFinger.direction);
+
+            console.assert(!isNaN(dot), "");
+
+            $('#out').text (dot.toPrecision(2));
+            //out.innerHTML = dot.toPrecision(2);
+          }
+        }
+
+      });
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,40 @@
+<style>
+      body {
+        line-height: 2em;
+        font-size: 2em;
+        font-family: Helvetica;
+      }
+</style>
+<h3> My Gesture</h3>
+<div id="out"></div>
+
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="../leap-0.6.4.js"></script>
+
+<script>
+
+//
+// from: https://developer-archive.leapmotion.com/documentation/v2/javascript/api/Leap.Gesture.html#id34
+//
+var controller = Leap.loop({enableGestures: true});
+
+controller.connect();
+
+controller.on("gesture", function(gesture){
+        switch (gesture.type){
+          case "circle":
+              console.log("Circle Gesture");
+              break;
+          case "keyTap":
+              console.log("Key Tap Gesture");
+              break;
+          case "screenTap":
+              console.log("Screen Tap Gesture");
+              break;
+          case "swipe":
+              console.log("Swipe Gesture");
+              break;
+        }
+
+});
+</script>

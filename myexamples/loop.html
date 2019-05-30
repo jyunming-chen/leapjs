@@ -1,0 +1,49 @@
+<style>
+      body {
+        line-height: 2em;
+        font-size: 2em;
+        font-family: Helvetica;
+      }
+</style>
+<h3> Loop </h3>
+<div id="out"></div>
+
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="../leap-0.6.4.js"></script>
+
+<script>
+
+      // to make working with angles easy
+      window.TO_RAD = Math.PI / 180;
+      window.TO_DEG = 1 / TO_RAD;
+/*
+      Leap.loop({
+
+        // frame callback is run before individual frame components
+        frame: function(frame){
+          out.innerHTML = ''
+        },
+
+        // hand callbacks are run once for each hand in the frame
+        hand: function(hand){
+          out.innerHTML += "Hand: " + hand.id + ' &nbsp;roll: ' + Math.round(hand.roll() * TO_DEG) + '°<br>'
+        }
+
+      });
+*/
+
+	  // a more orthodox way of coding ...
+	  
+      var controller = new Leap.Controller();
+	  controller.connect();
+	  
+	  controller.on ('frame', function (frame) {
+		 out.innerHTML = '';
+
+		 for (let i = 0; i < frame.hands.length; i++) {
+            let hand = frame.hands[i];
+            out.innerHTML += "Hand: " + hand.id + ' &nbsp;roll: ' + Math.round(hand.roll() * TO_DEG) + '°<br>'		 	
+		 }	  
+	  })
+
+</script>
